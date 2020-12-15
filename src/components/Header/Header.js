@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom'
 import './Header.scss'
 
 const Header = () => {
@@ -7,9 +8,17 @@ const Header = () => {
       <a id="logo" href="/">sample app</a>
       
       <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/">Users</a></li>
-        <li><a href="/">Account</a></li>
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/users">Users</Link></li>
+        <li className="dropdown">
+          <Link to="/">Account</Link>
+          <ul className="dropdown__content">
+            <li><Link to="/profile">Profile</Link></li>
+            <li><Link to="/settings">Settings</Link></li>
+            <li className="divider"></li>
+            <li><Link to="/">Log out</Link></li>
+          </ul>
+        </li>
         <li><button>New Post</button></li>
       </ul>
     </div>
