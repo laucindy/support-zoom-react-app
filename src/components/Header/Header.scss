@@ -33,8 +33,35 @@
       color: var(--dark-gray-color);
 
       &:hover {
-        color: var(--accent-color);
+        color: var(--accent-color-1);
       }
+    }
+  }
+
+  ul li.dropdown {
+    .dropdown__content {
+      background-color: var(--light-bg-color);
+      display: none;
+      border-color: var(--light-gray-color);
+      border-style: solid;
+      border-width: 0 1px 1px 1px;
+
+      li {
+        padding: 5px 25px;
+      }
+
+      .divider {
+        height: 1px;
+        background-color: var(--light-gray-color);
+        padding: 0;
+      }
+    }
+  
+    & a:hover + .dropdown__content, .dropdown__content:hover {
+      display: block;
+      position: absolute;
+      padding: 0;
+      margin-top: 1.3em;
     }
   }
 

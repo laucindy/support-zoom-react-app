@@ -1,0 +1,27 @@
+.footer {
+  width: 80%;
+  display: flex;
+  font-size: 0.8em;
+  border-top: 1px solid var(--light-gray-color);
+  margin: 0 auto;
+  justify-content: flex-end;
+
+  ul {
+    display: flex;
+    margin-top: 8px;
+  }
+
+  li {
+    list-style-type: none;
+
+    a {
+      margin: 0 5px;
+      text-decoration: none;
+      color: var(--dark-gray-color);
+
+      &:hover {
+        color: var(--accent-color-1);
+      }
+    }
+  }
+}
