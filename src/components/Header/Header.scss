@@ -39,6 +39,10 @@
   }
 
   ul li.dropdown {
+    & a:first-child {
+      padding: 17px 0;    /* ensures dropdown links can be selected, pretty hacky */
+    }
+
     .dropdown__content {
       background-color: var(--light-bg-color);
       display: none;
