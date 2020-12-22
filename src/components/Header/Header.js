@@ -19,7 +19,7 @@ const Header = () => {
             <li><Link to="/">Log out</Link></li>
           </ul>
         </li>
-        <li><button>New Post</button></li>
+        <li><Link to="/newpost"><button>New Post</button></Link></li>
       </ul>
     </div>
   )
