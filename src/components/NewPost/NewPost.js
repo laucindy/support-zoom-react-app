@@ -1,20 +1,53 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {Button, DatePicker, DisplayText, Form, FormLayout, Icon, Popover, Select, TextContainer, TextField} from '@shopify/polaris';
 import { CalendarMajor } from '@shopify/polaris-icons';
+import { gql, useMutation, useQuery } from '@apollo/client';
+
+const ADD_POST = gql`
+  mutation CreatePost($title: String!, $content: String!, $dateCreated: String!, $category: String!, $tag1: String!, $tag2: String!, $tag3: String!, $user: String!) {
+    createPost(input: {
+      postRequest: {
+        title: $title,
+        content: $content,
+        dateCreated: $dateCreated,
+        user: $user,
+        category: $category,
+        tag1: $tag1,
+        tag2: $tag2,
+        tag3: $tag3
+      }
+    }) {
+      post {
+        id,
+        title,
+        content,
+        dateCreated,
+        user {
+          name
+        }
+        category,
+        tag1,
+        tag2,
+        tag3
+      }
+    }
+  }
+`;
 
 const NewPost = () => {
   const [state, setState] = useState({
     title: "",
     content: "",
-    selectedDate: new Date('Dec 25 2020 00:00:00 GMT-0500 (EST)'),
-    author: "",
+    selectedDate: new Date(),
+    user: "",
     category: "",
     tag1: "",
     tag2: "",
-    tag3: ""
+    tag3: "",
   });
 
-  const [calendarView, setCalendarView] = useState({ month: 11, year: 2020 })
+  /* blog post date, and open/close calendar functionality */
+  const [calendarView, setCalendarView] = useState({ month: state.selectedDate.getMonth(), year: state.selectedDate.getFullYear() })
 
   const handleChange = (e, elementName) => {
     setState({
@@ -24,7 +57,7 @@ const NewPost = () => {
   }
 
   const handleCalendarChange = (e) => {
-    console.log('in handleCalendarChange', e)
+  //  console.log('in handleCalendarChange', e)
     setState({
       ...state,
       selectedDate: e.start
@@ -32,12 +65,8 @@ const NewPost = () => {
   }
 
   const handleMonthChange = useCallback((month, year) => {
-    console.log(`in handleMonthChange: month: ${month}, year: ${year}`)
+  //  console.log(`in handleMonthChange: month: ${month}, year: ${year}`)
     setCalendarView({month, year})
-  }, []);
-
-  const handleSubmit = useCallback((_event) => {
-
   }, []);
 
   const [popoverActive, setPopoverActive] = useState(false);
@@ -53,12 +82,25 @@ const NewPost = () => {
     () => setPopoverActive(false), []
   );
 
-  /* placeholder for author options */
-  const authorOptions = [
-    {label: 'Example User', value: 'Example User'},
-    {label: 'John Smith', value: 'John Smith'},
-    {label: 'Jane Doe', value: 'Jane Doe'},
-  ];
+  /* get list of all available users/authors for blog posts */
+  const GET_AUTHORS = gql`
+    query {
+      users {
+        name
+      }
+    }
+  `;
+
+  const [authors, setAuthors] = useState([]);
+  const { authorLoading, authorError, authorData } = useQuery(
+    GET_AUTHORS,
+    {
+      onCompleted: (data) => {
+        console.log('onCompleted data:', data);
+        setAuthors(data.users.map(({ name }) => ({ label: name, value: name })));
+      }
+    }
+  );
 
   /* placeholder for category options */
   const categoryOptions = [
@@ -67,8 +109,9 @@ const NewPost = () => {
     {label: 'Thoughts', value: 'Thoughts'},
   ];
 
+  /* debugging: test that all field states are set properly */
   useEffect(() => {
-    console.log('useEffect, state:', state);
+  //  console.log('useEffect, state:', state);
   }, [state])
 
   const activator = (
@@ -81,6 +124,23 @@ const NewPost = () => {
     />
   );
 
+  const [addPost, { loading: mutationLoading, error: mutationError }] = useMutation(ADD_POST);
+
+  const handleSubmit = useCallback((_event) => {
+    addPost({ variables: { title: state.title, content: state.content, dateCreated: state.selectedDate, user: state.user, category: state.category, tag1: state.tag1, tag2: state.tag2, tag3: state.tag3 } });
+
+    setState({
+      title: "",
+      content: "",
+      selectedDate: new Date(),
+      user: "",
+      category: "",
+      tag1: "",
+      tag2: "",
+      tag3: ""
+    })
+  }, [state, addPost]);
+
   return (
     <div style={{margin: '0 auto'}}>
       <TextContainer>
@@ -88,8 +148,11 @@ const NewPost = () => {
         <DisplayText size="large">Create a new post</DisplayText>
         <br />
 
+        {mutationLoading && <p>Loading...</p>}
+        {mutationError && <p>Error: Please try again</p>}
+
         <Form onSubmit={handleSubmit}>
-        <FormLayout>
+          <FormLayout>
             <TextField label="Title" value={state.title} onChange={e => handleChange(e, "title")} />
             <TextField label="Content" multiline={6} value={state.content} onChange={e => handleChange(e, "content")} />
             
@@ -107,7 +170,7 @@ const NewPost = () => {
               />
             </Popover>
 
-            <Select label="Author" options={authorOptions} onChange={e => handleChange(e, "author")} value={state.author} />
+            <Select label="Author" options={authors} onChange={e => handleChange(e, "user")} value={state.user} />
             <Select label="Category" options={categoryOptions} onChange={e => handleChange(e, "category")} value={state.category} />
 
             <TextField label="Tag 1" value={state.tag1} onChange={e => handleChange(e, "tag1")} />
@@ -115,8 +178,8 @@ const NewPost = () => {
             <TextField label="Tag 3" value={state.tag3} onChange={e => handleChange(e, "tag3")} />
 
             <Button submit>Submit</Button>
-        </FormLayout>
-      </Form>
+          </FormLayout>
+        </Form>
       </TextContainer>
     </div>
   )
