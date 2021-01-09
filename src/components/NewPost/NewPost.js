@@ -1,38 +1,9 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Button, DatePicker, DisplayText, Form, FormLayout, Icon, Popover, Select, TextContainer, TextField} from '@shopify/polaris';
+import {Banner, Button, DatePicker, DisplayText, Form, FormLayout, Icon, Popover, Select, TextContainer, TextField} from '@shopify/polaris';
 import { CalendarMajor } from '@shopify/polaris-icons';
-import { gql, useMutation, useQuery } from '@apollo/client';
-
-const ADD_POST = gql`
-  mutation CreatePost($title: String!, $content: String!, $dateCreated: String!, $category: String!, $tag1: String!, $tag2: String!, $tag3: String!, $user: String!) {
-    createPost(input: {
-      postRequest: {
-        title: $title,
-        content: $content,
-        dateCreated: $dateCreated,
-        user: $user,
-        category: $category,
-        tag1: $tag1,
-        tag2: $tag2,
-        tag3: $tag3
-      }
-    }) {
-      post {
-        id,
-        title,
-        content,
-        dateCreated,
-        user {
-          name
-        }
-        category,
-        tag1,
-        tag2,
-        tag3
-      }
-    }
-  }
-`;
+import { useMutation, useQuery } from '@apollo/client';
+import ADD_POST from './CreatePostMutation';
+import GET_AUTHORS from './GetAuthorsQuery';
 
 const NewPost = () => {
   const [state, setState] = useState({
@@ -57,7 +28,6 @@ const NewPost = () => {
   }
 
   const handleCalendarChange = (e) => {
-  //  console.log('in handleCalendarChange', e)
     setState({
       ...state,
       selectedDate: e.start
@@ -82,22 +52,18 @@ const NewPost = () => {
     () => setPopoverActive(false), []
   );
 
-  /* get list of all available users/authors for blog posts */
-  const GET_AUTHORS = gql`
-    query {
-      users {
-        name
-      }
-    }
-  `;
-
+  /* Update author dropdown with list of all valid users */
   const [authors, setAuthors] = useState([]);
-  const { authorLoading, authorError, authorData } = useQuery(
+  const { _authorLoading, _authorError, _authorData } = useQuery(
     GET_AUTHORS,
     {
       onCompleted: (data) => {
-        console.log('onCompleted data:', data);
         setAuthors(data.users.map(({ name }) => ({ label: name, value: name })));
+  
+        setState({
+          ...state,
+          user: data.users[0].name
+        })
       }
     }
   );
@@ -124,25 +90,28 @@ const NewPost = () => {
     />
   );
 
-  const [addPost, { loading: mutationLoading, error: mutationError }] = useMutation(ADD_POST);
+  const [createdNewPost, setCreatedNewPost] = useState(false);
+  const [addPost, { loading: mutationLoading, error: mutationError }] = useMutation(
+    ADD_POST,
+    {
+      onCompleted: (data) => {
+        setCreatedNewPost(true);
+        setState({title: "", content: "", selectedDate: new Date(), user: "", category: "", tag1: "", tag2: "", tag3: ""});
+      },
+      onError: (error) => {
+        console.log("error:", error);
+      }
+    }
+  );
 
   const handleSubmit = useCallback((_event) => {
-    addPost({ variables: { title: state.title, content: state.content, dateCreated: state.selectedDate, user: state.user, category: state.category, tag1: state.tag1, tag2: state.tag2, tag3: state.tag3 } });
-
-    setState({
-      title: "",
-      content: "",
-      selectedDate: new Date(),
-      user: "",
-      category: "",
-      tag1: "",
-      tag2: "",
-      tag3: ""
-    })
+    addPost({ variables: { title: state.title, content: state.content, dateCreated: state.selectedDate, user: state.user, category: state.category, tag1: state.tag1, tag2: state.tag2, tag3: state.tag3 } });    
   }, [state, addPost]);
 
   return (
     <div style={{margin: '0 auto'}}>
+      {createdNewPost ? <Banner title="Successfully created new post!" status="success" /> : ''}
+
       <TextContainer>
         <br />
         <DisplayText size="large">Create a new post</DisplayText>

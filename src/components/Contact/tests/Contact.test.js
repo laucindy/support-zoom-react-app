@@ -1,6 +1,6 @@
-import React from 'react'
-import Contact from '../Contact'
-import { mount } from '@shopify/react-testing'
+import React from 'react';
+import Contact from '../Contact';
+import { mount } from '@shopify/react-testing';
 
 describe('<Contact />', () => {
   it('renders hardcoded title string', () => {

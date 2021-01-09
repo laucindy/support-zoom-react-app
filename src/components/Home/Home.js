@@ -4,12 +4,7 @@ import './Home.scss'
 
 
 const Home = () => {
-  /*const microposts = [
-    {id: 1, content: "This is a test", user: "Jane Doe", created_at: "Dec 12, 2020", followers: 21},
-    {id: 2, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vehicula sed magna ut sodales.", user: "John Smith", created_at: "Dec 15, 2020", followers: 30}
-  ]
-  const latestMicropostsFirst = microposts.reverse();*/
-
+  /* placeholder for user data, microposts querying not currently implemented */
   const user = {name: "Cindy Lau", followers: 25, following: 35, microposts: 20}
 
   return (

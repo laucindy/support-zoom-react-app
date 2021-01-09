@@ -1,7 +1,7 @@
 import './App.scss';
 import React from "react";
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom'
-import { Header, Footer, About, Contact, Home, NewPost, Profile, Settings, Users } from './components'
+import { Header, Footer, About, Contact, Home, NewPost, Profile, Settings } from './components'
 import '@shopify/polaris/dist/styles.css';
 import enTranslations from '@shopify/polaris/locales/en.json';
 import {AppProvider} from '@shopify/polaris';
@@ -23,7 +23,6 @@ function App() {
               <Route path="/polaris" component={NewPost} />
               <Route path="/profile" component={Profile} />
               <Route path="/settings" component={Settings} />
-              <Route path="/users" component={Users} />
             </Switch>
           </div>
 

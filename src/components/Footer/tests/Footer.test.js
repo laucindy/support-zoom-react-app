@@ -1,8 +1,8 @@
-import React from 'react'
-import Footer from '../Footer'
-import { mount } from '@shopify/react-testing'
-import { StaticRouter } from 'react-router'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import Footer from '../Footer';
+import { mount } from '@shopify/react-testing';
+import { StaticRouter } from 'react-router';
+import { Link } from 'react-router-dom';
  
 describe('<Footer />', () => {
   it('links to About page', () => {

@@ -17,17 +17,16 @@
   }
 
   &__title {
-    color: var(--dark-gray-color);
-    font-size: 0.8em;
-
-    &-name {
-      color: var(--black-color);
-      font-weight: bold;
-    }
+    color: var(--black-color);
+    font-weight: bold;
   }
 
-  &__followers {
+  &__subtitle, &__comments, &__category, &__tags {
     color: var(--dark-gray-color);
     font-size: 0.8em;
+  }
+
+  &__comments, &__category {
+    margin-top: 1em;
   }
 }
