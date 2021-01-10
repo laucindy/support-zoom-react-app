@@ -6,10 +6,13 @@ import ADD_POST from './CreatePostMutation';
 import GET_AUTHORS from './GetAuthorsQuery';
 
 const NewPost = () => {
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const [state, setState] = useState({
     title: "",
     content: "",
-    selectedDate: new Date(),
+    selectedDate: today,
     user: "",
     category: "",
     tag1: "",
@@ -95,11 +98,14 @@ const NewPost = () => {
     ADD_POST,
     {
       onCompleted: (data) => {
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
+
         setCreatedNewPost(true);
-        setState({title: "", content: "", selectedDate: new Date(), user: "", category: "", tag1: "", tag2: "", tag3: ""});
+        setState({title: "", content: "", selectedDate: today, user: "", category: "", tag1: "", tag2: "", tag3: ""});
       },
       onError: (error) => {
-        console.log("error:", error);
+        console.log("Error encountered: ", error);
       }
     }
   );
