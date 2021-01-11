@@ -1,5 +1,5 @@
 import React from "react";
-import './MicropostsList.css'
+import './MicropostsList.scss'
 import Micropost from '../Micropost'
 
 const MicropostsList = (props) => {
