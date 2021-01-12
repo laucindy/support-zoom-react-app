@@ -123,7 +123,7 @@ describe('<NewPost />', () => {
     expect(wrapper.find(Select, {'label': 'Author' })).toContainReactHtml('<option value="Cindy Lau">Cindy Lau</option><option value="John Smith">John Smith</option><option value="Jane Doe">Jane Doe</option>');
   });
 
-  it('creates a new post', async () => {
+  it('creates a new post using the GraphQL ADD_POST mutation', async () => {
     const wrapper = mount(testComponent);
 
     // first render, wait for GET_AUTHOR query to load
