@@ -1,24 +1,11 @@
 import React from "react";
-import './Posts.scss'
-import Post from '../Post'
-import { gql, useQuery } from '@apollo/client';
-
-const GET_POSTS = gql`
-  query {
-    posts {
-      id
-      title
-      content
-      user {
-        name
-      }
-      dateCreated
-    }
-  }
-`;
+import './Posts.scss';
+import Post from '../Post';
+import { useQuery } from '@apollo/client';
+import GET_POSTS from './PostsListQuery';
 
 const PostsList = () => {
-  const { loading, error, data } = useQuery(GET_POSTS)
+  const { loading, error, data } = useQuery(GET_POSTS);
 
   if (loading) return 'Loading...';
   if (error) return `Error! ${error.message}`;

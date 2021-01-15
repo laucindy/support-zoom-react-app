@@ -9,7 +9,6 @@ const Header = () => {
       
       <ul>
         <li><Link to="/">Home</Link></li>
-        <li><Link to="/users">Users</Link></li>
         <li className="dropdown">
           <Link to="/">Account</Link>
           <ul className="dropdown__content">

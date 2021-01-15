@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from "react";
 import './Post.scss'
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
+import GET_COMMENTS_FOR_POST from './PostCommentsQuery';
 
 const Post = (props) => {
   const post = props.post;
 
-  const GET_COMMENTS_FOR_POST = gql`
-    query($postId: ID!) {
-      commentsFromPost(postId: $postId) {
-        content,
-        user {
-          name
-        }
-      }
-    }
-`;
-
   const [commentsCount, setCommentsCount] = useState(0);
-  const { loading, error, data } = useQuery(GET_COMMENTS_FOR_POST, { variables: { postId: post.id } })
+  const { _loading, _error, data } = useQuery(GET_COMMENTS_FOR_POST, { variables: { postId: post.id } })
   
   useEffect(() => {
     if ((data != undefined) && (data.commentsFromPost != undefined)) {
@@ -28,11 +18,12 @@ const Post = (props) => {
   return (
     <div className="post">
       <div className="post__info">
-        <p className="post__title">
-          <span className="post__title-name">{post.user.name}</span> - {post.dateCreated}
-        </p>
+        <p className="post__title">{post.title}</p>
+        <p className="post__subtitle">{post.user.name} - {post.dateCreated}</p>
         <p className="post__content">{post.content}</p>
-        <p className="post__followers">{commentsCount} comment{commentsCount > 1 ? 's' : ''}</p>
+        <p className="post__category">Category: {post.category}</p>
+        <p className="post__tags">Tags: {post.tag1}, {post.tag2}, {post.tag3}</p>
+        <p className="post__comments">{commentsCount} comment{(commentsCount == 1) ? '' : 's'}</p>
       </div>
     </div>
   )
